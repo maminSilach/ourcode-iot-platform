@@ -20,7 +20,7 @@ IoT Microservice Platform – учебный проект, демонстрир�
 
 Откройте .env в редакторе, измените пароли/логины по желанию
 ```bash
-  cp infrastructure/.env.example infrastructure/.env
+  cp .env.example .env
 ```
 
 Запуск сервисов через Docker Compose:
