@@ -5,7 +5,7 @@ IoT Microservice Platform – учебный проект, демонстрир�
 
 Клонирование репозитория
 ```bash
-  git clone https://link-to-project
+  git clone https://github.com/maminSilach/ourcode-iot-platform.git
 ```
 
 Переход в корневую директорию
