@@ -13,6 +13,11 @@ IoT Microservice Platform – учебный проект, демонстрир�
   cd ourcode-iot-platform
 ```
 
+Переход в директорию с инфраструктурой
+```bash
+  cd ./infrastructure
+```
+
 Откройте .env в редакторе, измените пароли/логины по желанию
 ```bash
   cp infrastructure/.env.example infrastructure/.env
