@@ -1,0 +1,16 @@
+/infrastructure/bpm-platform.xml/
+/infrastructure/camunda/
+/infrastructure/data/
+/infrastructure/kafka/
+/infrastructure/local/
+/infrastructure/monitoring/
+/infrastructure/out/
+/infrastructure/postgres_data/
+/infrastructure/schema_registry_data/
+/.idea/
+/infrastructure/.env
+/infrastructure/grafana-storage/csv/
+/infrastructure/grafana-storage/data/
+/infrastructure/grafana-storage/pdf/
+/infrastructure/grafana-storage/plugins/
+/infrastructure/grafana-storage/png/
