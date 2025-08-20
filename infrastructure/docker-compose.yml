@@ -160,6 +160,8 @@ services:
     volumes:
       - ./grafana-storage:/var/lib/grafana
       - ./grafana-storage/data/grafana/provisioning:/etc/grafana/provisioning
+      - ./dashboards:/var/lib/grafana/dashboards
+      - ./provisioning:/etc/grafana/provisioning
     healthcheck:
       test: [ "CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health" ]
       interval: 15s
