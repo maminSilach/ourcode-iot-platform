@@ -32,73 +32,32 @@ Event Collector Service — это Spring Boot приложение, котор�
     
 # Инструкция по локальному запуску
 
+```bash
+make help
+```
+
 ##  Запуск необходимой инфраструктуры
-
-Переход в директорию с инфраструктурой
-```bash
- cd ../infrastructure
-```
-
-Откройте .env в редакторе, измените пароли/логины по желанию
-```bash
-cp .env.example .env
-```
-
-Запуск сервисов через Docker Compose:
+Откройте .env.example в редакторе, измените пароли/логины по желанию
 
 ```bash
- docker-compose up zookeeper kafka schema-registry kafka-ui cassandra -d
+ make infra-up
 ```
 
 #  Проверка работы
-
-Убедитесь, что все контейнеры запущены
-
 ```bash
-docker-compose ps
+make infra-check
 ```
-
-Проверить Kafka
-
-```bash
-docker-compose exec kafka kafka-topics --list --bootstrap-server localhost:9092
-```
-
-Проверить Schema Registry
-
-```bash
-curl -X GET http://localhost:8081/subjects
-```
-
-Альтернатива для PowerShell
-```bash
-iwr -Uri "http://localhost:8081/subjects" -Method Get
-```
-
-Проверить Cassandra
-
-```bash
-docker-compose exec cassandra cqlsh -e "DESCRIBE KEYSPACES"
-```
-
-– Откройте браузер: Kafka UI доступна по ссылке [http://localhost:8070](http://localhost:8070)
 
 # Запуск Spring Boot приложения
-
-Переход в корневую директорию сервиса
-
-```bash
-cd ../events-collector-service
-```
 
 Для запуска сервиса при необходимости нужные установите переменные окружения или используйте дефолтные (.properties)
 
 Запустите unit и интеграционные тесты
 ```bash
-./gradlew test 
+make app-test
 ```
 
 Запустите приложение 
 ```bash
-./gradlew bootRun
+make app-run
 ```
