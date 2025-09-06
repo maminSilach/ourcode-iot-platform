@@ -1,0 +1,68 @@
+server:
+  port: ${SERVER_PORT}
+spring:
+  application:
+    name: ${APPLICATION_NAME}
+  config:
+    import: .properties
+
+  datasource:
+    url: jdbc:shardingsphere:${SHARDING_FILE_LOCATION}
+    device:
+      batch-size: ${DEVICE_BATCH_SIZE}
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+  flyway:
+    enabled: false
+
+kafka:
+  server: ${KAFKA_SERVER}
+  error:
+    retry-interval: ${KAFKA_ERROR_RETRY_INTERVAL}
+    attempts: ${KAFKA_ERROR_ATTEMPTS}
+  device:
+    topic-dlq: ${DEVICE_ID_DLQ_TOPIC}
+
+schema:
+  registry:
+    url: ${SCHEMA_REGISTRY_URL}
+
+consumer:
+  device:
+    topic: ${DEVICE_ID_TOPIC}
+    groupId: ${DEVICE_GROUP_ID}
+    concurrency: ${DEVICE_ID_CONCURRENCY}
+    batch: ${KAFKA_BATCH}
+    max-poll-records: ${KAFKA_MAX_POLL_RECORDS}
+  device-dlq:
+    groupId: ${DEVICE_DLQ_GROUP_ID}
+    concurrency: ${DEVICE_DLQ_ID_CONCURRENCY}
+
+management:
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_INCLUDE}
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_SHOW_DETAILS}
+
+flyway:
+  location: ${FLYWAY_LOCATION}
+  dataSources:
+    - url: jdbc:postgresql://${SHARD0_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD0_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}

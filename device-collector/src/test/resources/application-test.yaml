@@ -1,0 +1,42 @@
+spring:
+  datasource:
+    url: jdbc:shardingsphere:classpath:sharding.yml
+    device:
+      batch-size: 2
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+  flyway:
+    enabled: false
+
+kafka:
+  error:
+    retry-interval: 1
+    attempts: 0
+  device:
+    topic-dlq: device-id.dlq
+
+consumer:
+  device:
+    topic: device-id
+    groupId: device-group
+    concurrency: 1
+    batch: true
+    max-poll-records: 2
+  device-dlq:
+    groupId: device.dlq-group
+    concurrency: 1
+
+flyway:
+  location: classpath:db/migration
+  dataSources:
+    - url: jdbc:postgresql://${SHARD0_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD0_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
