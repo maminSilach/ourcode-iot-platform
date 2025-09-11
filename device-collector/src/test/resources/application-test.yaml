@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:shardingsphere:classpath:sharding.yml
+    pool-size: 10
+    timeout:
+      connection: 30000
+      idle: 600000
+    max-life-time: 1800000
+
     device:
       batch-size: 2
-    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
   flyway:
     enabled: false
 
@@ -27,16 +31,3 @@ consumer:
 
 flyway:
   location: classpath:db/migration
-  dataSources:
-    - url: jdbc:postgresql://${SHARD0_MASTER}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
-    - url: jdbc:postgresql://${SHARD0_REPLICA}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
-    - url: jdbc:postgresql://${SHARD1_MASTER}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
-    - url: jdbc:postgresql://${SHARD1_REPLICA}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}

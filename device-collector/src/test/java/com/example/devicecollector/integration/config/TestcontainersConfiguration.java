@@ -77,18 +77,42 @@ abstract class TestcontainersConfiguration {
     protected static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("kafka.server", kafkaContainer::getBootstrapServers);
 
-        registry.add("SHARD0_MASTER", () -> getPostgresAddressWithDatabase(shard0Master));
-        registry.add("SHARD0_REPLICA", () -> getPostgresAddressWithDatabase(shard0Replica));
-        registry.add("SHARD1_MASTER", () -> getPostgresAddressWithDatabase(shard1Master));
-        registry.add("SHARD1_REPLICA", () -> getPostgresAddressWithDatabase(shard1Replica));
-        registry.add("DB_USERNAME", () -> POSTGRES_USER);
-        registry.add("DB_PASSWORD", () -> POSTGRES_PASSWORD);
+        registry.add("spring.datasource.url.shard-master0", () -> getPostgresAddressWithDatabase(shard0Master));
+        registry.add("spring.datasource.url.shard-replica0", () -> getPostgresAddressWithDatabase(shard0Replica));
+        registry.add("spring.datasource.url.shard-master1", () -> getPostgresAddressWithDatabase(shard1Master));
+        registry.add("spring.datasource.url.shard-replica1", () -> getPostgresAddressWithDatabase(shard1Replica));
+
+        registry.add("flyway.dataSources[0].url", () -> getPostgresAddressWithDatabase(shard0Master));
+        registry.add("flyway.dataSources[1].url", () -> getPostgresAddressWithDatabase(shard0Replica));
+        registry.add("flyway.dataSources[2].url", () -> getPostgresAddressWithDatabase(shard1Master));
+        registry.add("flyway.dataSources[3].url", () -> getPostgresAddressWithDatabase(shard1Replica));
+
+        registry.add("flyway.dataSources[0].username", () -> POSTGRES_USER);
+        registry.add("flyway.dataSources[1].username", () -> POSTGRES_USER);
+        registry.add("flyway.dataSources[2].username", () -> POSTGRES_USER);
+        registry.add("flyway.dataSources[3].username", () -> POSTGRES_USER);
+
+        registry.add("flyway.dataSources[0].password", () -> POSTGRES_PASSWORD);
+        registry.add("flyway.dataSources[1].password", () -> POSTGRES_PASSWORD);
+        registry.add("flyway.dataSources[2].password", () -> POSTGRES_PASSWORD);
+        registry.add("flyway.dataSources[3].password", () -> POSTGRES_PASSWORD);
+
+        registry.add("spring.datasource.username.shard-master0", () -> POSTGRES_USER);
+        registry.add("spring.datasource.username.shard-master1", () -> POSTGRES_USER);
+        registry.add("spring.datasource.username.shard-replica0", () -> POSTGRES_USER);
+        registry.add("spring.datasource.username.shard-replica1", () -> POSTGRES_USER);
+
+        registry.add("spring.datasource.password.shard-master0", () -> POSTGRES_PASSWORD);
+        registry.add("spring.datasource.password.shard-master1", () -> POSTGRES_PASSWORD);
+        registry.add("spring.datasource.password.shard-replica0", () -> POSTGRES_PASSWORD);
+        registry.add("spring.datasource.password.shard-replica1", () -> POSTGRES_PASSWORD);
+
 
         registry.add("schema.registry.url",
                 () -> "http://" + schemaRegistryContainer.getHost() + ":" + schemaRegistryContainer.getMappedPort(8081));
     }
 
     private static String getPostgresAddressWithDatabase(PostgreSQLContainer<?> shard) {
-        return shard.getHost() + ":" + shard.getFirstMappedPort() + "/" + shard.getDatabaseName();
+        return "jdbc:postgresql://" + shard.getHost() + ":" + shard.getFirstMappedPort() + "/" + shard.getDatabaseName();
     }
 }

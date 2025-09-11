@@ -7,10 +7,37 @@ spring:
     import: .properties
 
   datasource:
-    url: jdbc:shardingsphere:${SHARDING_FILE_LOCATION}
+    pool-size: ${DB_POOL_SIZE}
+    timeout:
+      connection: ${DB_TIMEOUT_CONNECTION}
+      idle: ${DB_TIMEOUT_IDLE}
+    max-life-time: ${DB_MAX_LIFE_TIME}
+    url:
+      shard-master0: jdbc:postgresql://${SHARD0_MASTER}
+      shard-master1: jdbc:postgresql://${SHARD1_MASTER}
+      shard-replica0: jdbc:postgresql://${SHARD0_REPLICA}
+      shard-replica1: jdbc:postgresql://${SHARD1_REPLICA}
+
+    username:
+      shard-master0: ${DB_USERNAME}
+      shard-master1: ${DB_USERNAME}
+      shard-replica0: ${DB_USERNAME}
+      shard-replica1: ${DB_USERNAME}
+
+    password:
+      shard-master0: ${DB_PASSWORD}
+      shard-master1: ${DB_PASSWORD}
+      shard-replica0: ${DB_PASSWORD}
+      shard-replica1: ${DB_PASSWORD}
+
+    shard:
+      table: ${SHARD_TABLE}
+      column: ${SHARD_COLUMN}
+      algorithm: ${SHARD_ALGORITHM}
+      type: ${SHARD_TYPE}
+
     device:
       batch-size: ${DEVICE_BATCH_SIZE}
-    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
   flyway:
     enabled: false
 

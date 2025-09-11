@@ -50,10 +50,6 @@ Production-Grade: Полное покрытие тестами (unit, integratio
 }
 ```
 
-# Конфигурация
-## Конфигурация ShardingSphere
-Конфигурация шардинга задается в src/main/resources/sharding.yml. Сервис использует режим ShardingSphere JDBC (встроенная библиотека).
-
 # Развертывание и эксплуатация
 ## Мониторинг
 
@@ -81,12 +77,12 @@ make help
 Откройте .env.example в редакторе, измените пароли/логины по желанию
 
 ```bash
- make infra-up
+make device-collector-infra-up
 ```
 
 #  Проверка работы
 ```bash
-make infra-check
+make device-collector-infra-check
 ```
 
 # Запуск Spring Boot приложения
@@ -95,10 +91,10 @@ make infra-check
 
 Запустите unit и интеграционные тесты
 ```bash
-make app-test
+make device-collector-app-test
 ```
 
 Запустите приложение
 ```bash
-make app-run
+make device-collector-app-run
 ```

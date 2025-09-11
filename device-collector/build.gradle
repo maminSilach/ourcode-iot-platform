@@ -46,6 +46,12 @@ dependencies {
 	implementation "org.springframework.kafka:spring-kafka"
 	implementation "io.confluent:kafka-avro-serializer:${avroSerializerVersion}"
 
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+
 	// MapStruct
 	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
@@ -63,11 +69,6 @@ dependencies {
 	// Jaxb
 	implementation "javax.xml.bind:jaxb-api:${jaxbVersion}"
 	runtimeOnly "org.glassfish.jaxb:jaxb-runtime:${jaxbVersion}"
-
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
-	annotationProcessor 'org.projectlombok:lombok'
 
 	// Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
