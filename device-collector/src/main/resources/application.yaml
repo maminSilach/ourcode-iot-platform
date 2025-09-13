@@ -1,0 +1,95 @@
+server:
+  port: ${SERVER_PORT}
+spring:
+  application:
+    name: ${APPLICATION_NAME}
+  config:
+    import: .properties
+
+  datasource:
+    pool-size: ${DB_POOL_SIZE}
+    timeout:
+      connection: ${DB_TIMEOUT_CONNECTION}
+      idle: ${DB_TIMEOUT_IDLE}
+    max-life-time: ${DB_MAX_LIFE_TIME}
+    url:
+      shard-master0: jdbc:postgresql://${SHARD0_MASTER}
+      shard-master1: jdbc:postgresql://${SHARD1_MASTER}
+      shard-replica0: jdbc:postgresql://${SHARD0_REPLICA}
+      shard-replica1: jdbc:postgresql://${SHARD1_REPLICA}
+
+    username:
+      shard-master0: ${DB_USERNAME}
+      shard-master1: ${DB_USERNAME}
+      shard-replica0: ${DB_USERNAME}
+      shard-replica1: ${DB_USERNAME}
+
+    password:
+      shard-master0: ${DB_PASSWORD}
+      shard-master1: ${DB_PASSWORD}
+      shard-replica0: ${DB_PASSWORD}
+      shard-replica1: ${DB_PASSWORD}
+
+    shard:
+      table: ${SHARD_TABLE}
+      column: ${SHARD_COLUMN}
+      algorithm: ${SHARD_ALGORITHM}
+      type: ${SHARD_TYPE}
+
+    device:
+      batch-size: ${DEVICE_BATCH_SIZE}
+  flyway:
+    enabled: false
+
+kafka:
+  server: ${KAFKA_SERVER}
+  error:
+    retry-interval: ${KAFKA_ERROR_RETRY_INTERVAL}
+    attempts: ${KAFKA_ERROR_ATTEMPTS}
+  device:
+    topic-dlq: ${DEVICE_ID_DLQ_TOPIC}
+
+schema:
+  registry:
+    url: ${SCHEMA_REGISTRY_URL}
+
+consumer:
+  device:
+    topic: ${DEVICE_ID_TOPIC}
+    groupId: ${DEVICE_GROUP_ID}
+    concurrency: ${DEVICE_ID_CONCURRENCY}
+    batch: ${KAFKA_BATCH}
+    max-poll-records: ${KAFKA_MAX_POLL_RECORDS}
+  device-dlq:
+    groupId: ${DEVICE_DLQ_GROUP_ID}
+    concurrency: ${DEVICE_DLQ_ID_CONCURRENCY}
+
+management:
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_INCLUDE}
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_SHOW_DETAILS}
+
+flyway:
+  location: ${FLYWAY_LOCATION}
+  dataSources:
+    - url: jdbc:postgresql://${SHARD0_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD0_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}

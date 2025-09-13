@@ -40,12 +40,12 @@ make help
 Откройте .env.example в редакторе, измените пароли/логины по желанию
 
 ```bash
- make infra-up
+make events-collector-infra-up
 ```
 
 #  Проверка работы
 ```bash
-make infra-check
+make events-collector-infra-check
 ```
 
 # Запуск Spring Boot приложения
@@ -54,10 +54,10 @@ make infra-check
 
 Запустите unit и интеграционные тесты
 ```bash
-make app-test
+make events-collector-app-test
 ```
 
 Запустите приложение 
 ```bash
-make app-run
+make events-collector-app-run
 ```

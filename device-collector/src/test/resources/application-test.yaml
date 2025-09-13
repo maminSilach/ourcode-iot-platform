@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    pool-size: 10
+    timeout:
+      connection: 30000
+      idle: 600000
+    max-life-time: 1800000
+
+    device:
+      batch-size: 2
+  flyway:
+    enabled: false
+
+kafka:
+  error:
+    retry-interval: 1
+    attempts: 0
+  device:
+    topic-dlq: device-id.dlq
+
+consumer:
+  device:
+    topic: device-id
+    groupId: device-group
+    concurrency: 1
+    batch: true
+    max-poll-records: 2
+  device-dlq:
+    groupId: device.dlq-group
+    concurrency: 1
+
+flyway:
+  location: classpath:db/migration

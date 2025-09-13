@@ -15,3 +15,6 @@
 /infrastructure/grafana-storage/plugins/
 /infrastructure/grafana-storage/png/
 /infrastructure/grafana-storage/
+/infrastructure/postgres2-replica_data/
+/infrastructure/postgres-replica_data/
+/infrastructure/postgres_data2/
