@@ -1,0 +1,22 @@
+@startuml
+!include <C4/C4.puml>
+!include <C4/C4_Deployment.puml>
+
+Container_Boundary(platform, "IoT Platform") {
+    Container(System_IoT, "Device Service", "Spring Boot", "Управление IoT-устройствами")
+
+    ContainerDb(shard1_primary, "Шард 1 (Primary)", "PostgreSQL", "Основной шард 1", $tags="primary")
+    ContainerDb(shard1_replica, "Шард 1 (Replica)", "PostgreSQL", "Реplica шарда 1", $tags="replica")
+
+    ContainerDb(shard2_primary, "Шард 2 (Primary)", "PostgreSQL", "Основной шард 2", $tags="primary")
+    ContainerDb(shard2_replica, "Шард 2 (Replica)", "PostgreSQL", "Реplica шарда 2", $tags="replica")
+}
+
+System_Ext(device, "IoT-устройство")
+Rel(device, System_IoT, "Отправка данных", "HTTP/Rest")
+
+Rel(System_IoT, shard1_primary, "Чтение/запись", "JDBC")
+Rel(System_IoT, shard2_primary, "Чтение/запись", "JDBC")
+Rel(shard1_primary, shard1_replica, "Репликация", "Streaming Replication")
+Rel(shard2_primary, shard2_replica, "Репликация", "Streaming Replication")
+@enduml

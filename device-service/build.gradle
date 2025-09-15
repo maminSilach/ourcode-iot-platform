@@ -1,0 +1,173 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+	id 'org.openapi.generator' version "$openApiGeneratorPluginVersion"
+	id 'maven-publish'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'device-service'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(24)
+	}
+}
+
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+publishing {
+	repositories {
+		maven {
+			name = 'nexus'
+			url = "${nexusRepository}"
+
+			credentials {
+				allowInsecureProtocol = true
+				username = "${nexusUsername}"
+				password = "${nexusPassword}"
+			}
+		}
+	}
+
+	publications {
+		maven(MavenPublication) {
+			artifact("build/libs/device-service-api-" + "${apiVersion}" + ".jar") {
+				extension 'jar'
+			}
+		}
+	}
+}
+
+dependencies {
+
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MapStruct
+	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+
+	// Micrometer
+	runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+	implementation "io.micrometer:micrometer-core"
+
+	runtimeOnly 'org.postgresql:postgresql'
+
+	// Sharding Sphere
+	implementation "org.apache.shardingsphere:shardingsphere-jdbc:${apacheShardingSphereVersion}"
+
+	// Jaxb
+	implementation "javax.xml.bind:jaxb-api:${jaxbVersion}"
+	runtimeOnly "org.glassfish.jaxb:jaxb-runtime:${jaxbVersion}"
+
+	implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${springCloudStarterOpenFeignVersion}"
+	implementation "jakarta.validation:jakarta.validation-api:${jakartaValidationApiVersion}"
+	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
+	implementation "javax.annotation:javax.annotation-api:${javaxAnnotationApiVersion}"
+	implementation "com.google.code.findbugs:jsr305:${jsr305Version}"
+	implementation "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
+	implementation "io.github.openfeign:feign-okhttp:${feignOkhttpVersion}"
+	implementation "io.github.openfeign:feign-jackson:${feignJacksonVersion}"
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
+	testImplementation "com.github.dasniko:testcontainers-keycloak:${keyCloakTestContainerVersion}"
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = new File("$rootDir/api/device-service.json").toURI().toString()
+	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
+	apiPackage = "com.example.deviceservice.api"
+	modelPackage = "com.example.deviceservice.model"
+	invokerPackage = "com.example.deviceservice.invoker"
+	configOptions = [library        : "spring-cloud",
+					 useFeignClients: "true",
+					 interfaceOnly  : "true",
+					 useJakartaEe   : "true",
+					 useTags: "true"]
+}
+
+tasks.register('annotateFeignClients') {
+	dependsOn 'openApiGenerate'
+	doLast {
+		def apiDir = layout.buildDirectory.dir('generated/src/main/java/com/example/deviceservice/api').get().asFile
+		apiDir.eachFile { file ->
+			if (file.name.endsWith("Api.java")) {
+				def text = file.text
+
+				if (!text.contains("import org.springframework.cloud.openfeign.FeignClient;")) {
+					text = text.replaceFirst(/(package [^;]+;\s*)/,
+							"\$1import org.springframework.cloud.openfeign.FeignClient;\n")
+				}
+
+				if (!text.contains("@FeignClient")) {
+					text = text.replaceFirst("public interface",
+							"@FeignClient(name = \"device-service-api\", url = \"\\\${device.service.base-uri}\")\npublic interface")
+				}
+				file.write(text)
+			}
+		}
+	}
+}
+
+compileJava.dependsOn 'annotateFeignClients'
+compileJava.dependsOn 'openApiGenerate'
+
+tasks.register('generatedClientJar', Jar) {
+	from sourceSets.main.output
+	include 'com/example/deviceservice/**'
+	archiveBaseName = 'device-service-api'
+	archiveVersion = "${apiVersion}"
+}
+
+publish.dependsOn 'generatedClientJar'
+publishMavenPublicationToNexusRepository.dependsOn 'generatedClientJar'
+
+sourceSets {
+	main {
+		java {
+			srcDir layout.buildDirectory.dir('generated/src/main/java')
+		}
+	}
+}
+
+compileJava {
+	options.compilerArgs += [
+			'-Amapstruct.defaultComponentModel=spring'
+	]
+}
+
+test {
+	useJUnitPlatform()
+	testLogging {
+		events "PASSED", "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+		showStandardStreams = true
+		showStackTraces = true
+		exceptionFormat = TestExceptionFormat.FULL
+	}
+}
