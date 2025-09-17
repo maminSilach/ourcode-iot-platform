@@ -1,0 +1,1 @@
+INSERT INTO devices VALUES ('phone', 'phone-type', 10000, 'phone-meta')

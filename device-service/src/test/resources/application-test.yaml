@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    pool-size: 10
+    timeout:
+      connection: 30000
+      idle: 600000
+    max-life-time: 1800000
+
+  security:
+    oauth2:
+      resourceserver:
+        client:
+          client-id: device-client
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL}/realms/${KEYCLOAK_REALM}

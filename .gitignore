@@ -2,7 +2,6 @@
 /infrastructure/camunda/
 /infrastructure/data/
 /infrastructure/kafka/
-/infrastructure/local/
 /infrastructure/monitoring/
 /infrastructure/out/
 /infrastructure/postgres_data/
@@ -18,3 +17,4 @@
 /infrastructure/postgres2-replica_data/
 /infrastructure/postgres-replica_data/
 /infrastructure/postgres_data2/
+/infrastructure/local/keycloak/

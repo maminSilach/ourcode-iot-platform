@@ -1,0 +1,174 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8090",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/v1/devices/{id}": {
+      "get": {
+        "tags": [
+          "device"
+        ],
+        "operationId": "getDeviceById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "device"
+        ],
+        "operationId": "updateDevice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "device"
+        ],
+        "operationId": "deleteDeviceById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/devices": {
+      "post": {
+        "tags": [
+          "device"
+        ],
+        "operationId": "createDevice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeviceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeviceRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "deviceType": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "meta": {
+            "type": "string"
+          }
+        }
+      },
+      "DeviceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "deviceType": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "meta": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

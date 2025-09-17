@@ -1,0 +1,14 @@
+@startuml
+actor Client as C
+participant "KeyCloak" as KC
+participant "DeviceService" as DCS
+participant "ShardingSphere JDBC" as SSJDBC
+database "PostgreSQL Shard N" as PGN
+
+C -> KC : отправить запрос на получение токена
+KC -> C : выдать токен авторизации
+C -> DCS: передать запрос с полученным токеном
+DCS -> SSJDBC : сохранить/обновить устройство (по deviceId)
+SSJDBC -> PGN : insert/update (шард определяется по deviceId)
+DCS -> DCS : логирование, метрики, определение shard-ключа
+@enduml

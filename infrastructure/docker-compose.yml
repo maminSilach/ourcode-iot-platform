@@ -154,6 +154,7 @@ services:
       - "8080:8080"
     volumes:
       - ./local/keycloak/:/opt/jboss/keycloak/standalone/data/
+      - ./local/keycloak/realm-out-platform.json:/opt/bitnami/keycloak/data/import/keycloak.default.realm.json
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
@@ -162,6 +163,7 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_DB_URL_DATABASE: ${POSTGRES_DB}
+      KEYCLOAK_EXTRA_ARGS: "--import-realm"
     command: ["start-dev", "--health-enabled=true"]
     networks:
       - ourcode-iot-platform
@@ -321,6 +323,31 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+
+  nexus:
+    image: sonatype/nexus3:latest
+    ports:
+      - "8081:8081"
+      - "8123:8123"
+    volumes:
+      - ./data/nexus-data:/nexus-data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081" ]
+      start_period: 60s
+
+  nexus-change-password:
+    image: appropriate/curl
+    container_name: nexus-change-password
+    environment:
+      - NEXUS_ADMIN_PASSWORD_FILE=/nexus-data/admin.password
+      - NEXUS_NEW_PASSWORD=admin
+    depends_on:
+      nexus:
+        condition: service_healthy
+    entrypoint: [ "/bin/sh", "/scripts/change-password.sh" ]
+    volumes:
+      - ./data/nexus-data:/nexus-data
+      - ./nexus:/scripts:ro
 
 networks:
   ourcode-iot-platform:
