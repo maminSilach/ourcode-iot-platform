@@ -1,0 +1,57 @@
+{
+  "type": "record",
+  "name": "FailedEventRecord",
+  "namespace": "com.example.events",
+  "fields": [
+    {
+      "name": "failedEvent",
+      "type": {
+        "type": "record",
+        "name": "FailedEvent",
+        "fields": [
+          {
+            "name": "eventId",
+            "type": "string"
+          },
+          {
+            "name": "deviceId",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "long"
+          },
+          {
+            "name": "payload",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "errorMeta",
+      "type": {
+        "type": "record",
+        "name": "ErrorMeta",
+        "fields": [
+          {
+            "name": "errorSource",
+            "type": "string"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "stackTrace",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

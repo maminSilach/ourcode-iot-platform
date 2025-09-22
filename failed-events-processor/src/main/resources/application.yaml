@@ -1,0 +1,41 @@
+server:
+  port: ${SERVER_PORT}
+spring:
+  application:
+    name: ${APPLICATION_NAME}
+  config:
+    import: .properties
+
+aws:
+  host: ${AWS_HOST}
+  secret-key: ${AWS_SECRET_KEY}
+  access-key-id: ${AWS_ACCESS_KEY_ID}
+  region-static: ${AWS_REGION_STATIC}
+  retry:
+    attempts: ${AWS_RETRY_ATTEMPTS}
+    backoff: ${AWS_RETRY_BACKOFF}
+
+event:
+  failed-bucket-name: ${FAILED_EVENT_BUCKET_NAME}
+
+kafka:
+  server: ${KAFKA_SERVER}
+
+schema:
+  registry:
+    url: ${SCHEMA_REGISTRY_URL}
+
+consumer:
+  failed-event:
+    topic: ${FAILED_EVENT_TOPIC}
+    groupId: ${FAILED_EVENT_GROUP_ID}
+    concurrency: ${FAILED_EVENT_CONCURRENCY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_INCLUDE}
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_SHOW_DETAILS}

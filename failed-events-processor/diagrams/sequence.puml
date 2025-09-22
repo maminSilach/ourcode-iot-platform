@@ -1,0 +1,14 @@
+@startuml
+actor KafkaBroker
+participant "FailedEventsProcessor" as FEP
+participant "Deserializer" as DES
+participant "MinIO" as MINIO
+
+KafkaBroker -> FEP : сообщение (DLT, Avro/JSON)
+FEP -> DES : парсинг, извлечение payload + метаданных
+DES --> FEP : внутренний DTO
+FEP -> FEP : формирование JSON-структуры, генерация имени файла
+FEP -> MINIO : сохранение файла в bucket
+MINIO --> FEP : подтверждение/ошибка
+FEP -> FEP : логирование, метрики, retry при ошибке
+@enduml
