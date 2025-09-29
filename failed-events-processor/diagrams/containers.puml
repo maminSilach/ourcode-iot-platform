@@ -1,0 +1,21 @@
+@startuml
+!include <C4/C4.puml>
+!include <C4/C4_Deployment.puml>
+
+Container_Boundary(platform, "IoT Platform") {
+    Container(System_IoT, "Device Service", "Spring Boot", "Управление IoT-устройствами")
+    Container(api, "API", "Java/Spring", "Предоставляет API для веб-приложения")
+
+    Container(minio, "MiniO", "PostgreSQL", "Объектное хранилище", $tags="primary")
+
+    Container(queue, "Kafka", "Message Broker", "Очередь сообщений для событий устройств и передачи уникальных идентификаторов")
+    Container(api, "Schema Registry", "API", "Централизованное хранилище Avro-схем")
+}
+
+System_Ext(device, "IoT-устройство")
+Rel(device, queue, "Отправка данных (producer)", "Kafka protocol")
+Rel(System_IoT, queue, "Чтение данных от устройств (consumer)", "Kafka")
+Rel(System_IoT, api, "Получение информации об актуальной схеме", "Kafka")
+
+Rel(System_IoT, minio, "Чтение/запись", "S3")
+@enduml
