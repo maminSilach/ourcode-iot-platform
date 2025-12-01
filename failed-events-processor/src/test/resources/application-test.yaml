@@ -1,0 +1,13 @@
+aws:
+  retry:
+    attempts: 3
+    backoff: 1000
+
+event:
+  failed-bucket-name: failed-events
+
+consumer:
+  failed-event:
+    topic: failed-events
+    groupId: failed-events-group
+    concurrency: 1
