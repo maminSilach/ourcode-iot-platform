@@ -1,0 +1,13 @@
+@startuml
+!include <C4/C4.puml>
+!include <C4/C4_Deployment.puml>
+
+Container_Boundary(platform, "IoT Platform") {
+    Container(System_IoT, "Router Manager Service", "Go App", "Управление командами роутеров")
+    ContainerDb(postgres, "Postgres", "SQL Database", "Хранилище команд")
+}
+
+System_Ext(command, "IoT-устройство")
+Rel(command, System_IoT, "Отправка данных (команда)", "gRPC protocol")
+Rel(System_IoT, postgres, "Сохранение данных о команде", "JDBC")
+@enduml

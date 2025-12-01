@@ -6,7 +6,7 @@ CREATE TABLE routers (
                          created_at TIMESTAMP DEFAULT now()
 );
 
-CREATE TABLE commands (
+CREATE TABLE  commands (
                           id UUID PRIMARY KEY,
                           router_id UUID REFERENCES routers(id),
                           command_type TEXT NOT NULL,
@@ -16,7 +16,3 @@ CREATE TABLE commands (
                           acked_at TIMESTAMP,
                           created_at TIMESTAMP DEFAULT now()
 );
-
--- +goose Down
-DROP TABLE commands;
-DROP TABLE routers;

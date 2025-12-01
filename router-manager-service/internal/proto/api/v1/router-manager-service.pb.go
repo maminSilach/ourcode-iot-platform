@@ -123,9 +123,9 @@ func (CommandType) EnumDescriptor() ([]byte, []int) {
 
 type CommandRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	RouterId    string      `protobuf:"bytes,1,opt,name=router_id,json=routerId,proto3" json:"router_id,omitempty"`
-	CommandType CommandType `protobuf:"varint,2,opt,name=command_type,json=commandType,proto3,enum=api.v1.CommandType" json:"command_type,omitempty"`
-	Payload     string      `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	RouterId      string                 `protobuf:"bytes,1,opt,name=router_id,json=routerId,proto3" json:"router_id,omitempty"`
+	CommandType   CommandType            `protobuf:"varint,2,opt,name=command_type,json=commandType,proto3,enum=api.v1.CommandType" json:"command_type,omitempty"`
+	Payload       string                 `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -272,11 +272,11 @@ func (x *PollResponse) GetCommands() []*Command {
 type Command struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	RouterId    string      `protobuf:"bytes,2,opt,name=router_id,json=routerId,proto3" json:"router_id,omitempty"`
-	CommandType CommandType `protobuf:"varint,3,opt,name=command_type,json=commandType,proto3,enum=api.v1.CommandType" json:"command_type,omitempty"`
-	Payload     string      `protobuf:"bytes,4,opt,name=payload,proto3" json:"payload,omitempty"`
-	Status      Status      `protobuf:"varint,5,opt,name=status,proto3,enum=api.v1.Status" json:"status,omitempty"`
-	SentAt      string      `protobuf:"bytes,6,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`
+	RouterId      string                 `protobuf:"bytes,2,opt,name=router_id,json=routerId,proto3" json:"router_id,omitempty"`
+	CommandType   CommandType            `protobuf:"varint,3,opt,name=command_type,json=commandType,proto3,enum=api.v1.CommandType" json:"command_type,omitempty"`
+	Payload       string                 `protobuf:"bytes,4,opt,name=payload,proto3" json:"payload,omitempty"`
+	Status        Status                 `protobuf:"varint,5,opt,name=status,proto3,enum=api.v1.Status" json:"status,omitempty"`
+	SentAt        string                 `protobuf:"bytes,6,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`
 	AckedAt       string                 `protobuf:"bytes,7,opt,name=acked_at,json=ackedAt,proto3" json:"acked_at,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
