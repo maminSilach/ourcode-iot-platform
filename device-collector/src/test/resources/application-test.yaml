@@ -30,4 +30,4 @@ consumer:
     concurrency: 1
 
 flyway:
-  location: classpath:db/migrations
+  location: classpath:db/migration
