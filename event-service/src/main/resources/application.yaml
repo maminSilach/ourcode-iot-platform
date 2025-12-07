@@ -1,0 +1,21 @@
+server:
+  port: ${SERVER_PORT}
+spring:
+  application:
+    name: ${APPLICATION_NAME}
+  config:
+    import: .properties
+  cassandra:
+    keyspace-name: ${DEVICE_KEYSPACE_NAME}
+    contact-points: ${CASSANDRA_CONTACT_POINTS}
+    port: ${CASSANDRA_PORT}
+    model-path: ${CASSANDRA_MODEL_PATH}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_INCLUDE}
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_SHOW_DETAILS}

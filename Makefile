@@ -3,12 +3,14 @@
 .PHONY: events-collector-infra-up events-collector-infra-check events-collector-app-test events-collector-app-run
 .PHONY: device-service-infra-up device-service-infra-check device-service-app-test device-service-app-run
 .PHONY: failed-event-processor-infra-up failed-event-processor-infra-check failed-event-processor-app-test failed-event-processor-app-run
+.PHONY: event-service-infra-up events-service-infra-check event-service-app-test event-service-app-run
 
 INFRA_DIR = ./infrastructure
 DEVICE_COLLECTOR_APP_DIR = ./device-collector
 EVENTS_COLLECTOR_APP_DIR = ./events-collector-service
 DEVICE_SERVICE_APP_DIR = ./device-service
 FAILED_EVENTS_PROCESSOR_APP_DIR = ./failed-events-processor
+EVENT_SERVICE_APP_DIR = ./event-service
 DOCKER_COMPOSE = docker-compose
 
 device-service-infra-up:
@@ -170,6 +172,41 @@ failed-event-processor-app-run:
 	@echo "Starting Spring Boot application..."
 	cd $(FAILED_EVENTS_PROCESSOR_APP_DIR) && gradlew bootRun
 
+event-service-infra-up:
+	@echo "Moving to infrastructure directory..."
+	cd $(INFRA_DIR) && \
+	cp .env.example .env && \
+	echo "Open .env in editor and change passwords/logins if needed" && \
+	$(DOCKER_COMPOSE) up cassandra nexus nexus-change-password prometheus grafana -d
+	@echo "Infrastructure is starting..."
+
+events-service-infra-check:
+	@echo "Checking container status..."
+	cd $(INFRA_DIR) && $(DOCKER_COMPOSE) ps
+
+	@echo "Checking Cassandra..."
+	cd $(INFRA_DIR) && $(DOCKER_COMPOSE) exec cassandra cqlsh -e "DESCRIBE KEYSPACES"
+
+	@echo "Checking Prometheus targets..."
+	curl http://localhost:9090/api/v1/targets
+
+	@echo "Checking Grafana health..."
+	curl http://localhost:3000/api/health
+
+	@echo "Checking Nexus health..."
+	curl http://localhost:8081
+
+	@echo "Back to Service Directory"
+	cd $(./)
+
+event-service-app-test:
+	@echo "Running unit and integration tests..."
+	cd $(EVENT_SERVICE_APP_DIR) && ./gradlew test
+
+event-service-app-run:
+	@echo "Starting Spring Boot application..."
+	cd $(EVENT_SERVICE_APP_DIR) && ./gradlew bootRun
+
 help:
 	@echo "Available commands:"
 	@echo "  make device-collector-infra-up     - Start infrastructure Device Collector"
@@ -191,5 +228,10 @@ help:
 	@echo "  make failed-event-processor-infra-check  - Check infrastructure status of Failed Event Processor"
 	@echo "  make failed-event-processor-app-test    - Run application tests of Failed Event Processor"
 	@echo "  make failed-event-processor-app-run    - Run Spring Boot Failed Event Processor Application"
+
+	@echo "  make event-service-infra-up    - Start infrastructure Event Service"
+	@echo "  make events-service-infra-check  - Check infrastructure status of Event Service"
+	@echo "  make event-service-app-test    - Run application tests of Event Service"
+	@echo "  make event-service-app-run   - Run Spring Boot Event Service Application"
 
 	@echo "  make help         - Show this help"

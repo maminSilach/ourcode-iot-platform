@@ -1,0 +1,4 @@
+spring:
+  cassandra:
+    keyspace-name: "eventkeyspace"
+    model-path: "com/example/eventservice/entity"
