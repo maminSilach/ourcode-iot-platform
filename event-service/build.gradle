@@ -23,9 +23,9 @@ publishing {
 		maven {
 			name = 'nexus'
 			url = "${nexusRepository}"
+			allowInsecureProtocol = true
 
 			credentials {
-				allowInsecureProtocol = true
 				username = "${nexusUsername}"
 				password = "${nexusPassword}"
 			}
@@ -37,9 +37,11 @@ publishing {
 			artifact("build/libs/event-service-api-" + "${apiVersion}" + ".jar") {
 				extension 'jar'
 			}
-		}
 
-		version = "${apiVersion}"
+			groupId = 'com.example'
+			artifactId = 'event-service-api'
+			version = "${apiVersion}"
+		}
 	}
 }
 
@@ -54,6 +56,8 @@ openApiGenerate {
 					 useFeignClients: "true",
 					 interfaceOnly  : "true",
 					 useJakartaEe   : "true",
+					 returnResponseEntity: "false",
+					 useResponseEntity: "false",
 					 useTags: "true"]
 }
 
@@ -72,7 +76,7 @@ tasks.register('annotateFeignClients') {
 
 				if (!text.contains("@FeignClient")) {
 					text = text.replaceFirst("public interface",
-							"@FeignClient(name = \"device-service-api\", url = \"\\\${event.service.base-uri}\")\npublic interface")
+							"@FeignClient(name = \"event-service-api\", url = \"\\\${event.service.base-uri}\")\npublic interface")
 				}
 				file.write(text)
 			}
@@ -80,16 +84,20 @@ tasks.register('annotateFeignClients') {
 	}
 }
 
-compileJava.dependsOn 'annotateFeignClients'
-compileJava.dependsOn 'openApiGenerate'
+tasks.register('compileGeneratedJava', JavaCompile) {
+	dependsOn 'annotateFeignClients'
+	source = layout.buildDirectory.dir("generated/src/main/java").get().asFileTree
+	destinationDirectory = layout.buildDirectory.dir("classes/generated/main").get().asFile
+	classpath = sourceSets.main.compileClasspath
+}
 
 tasks.register('generatedClientJar', Jar) {
-	from sourceSets.main.output
-	include 'com/example/eventservice/**'
+	dependsOn 'compileGeneratedJava'
+	from layout.buildDirectory.dir("classes/generated/main")
 	archiveBaseName = 'event-service-api'
 	archiveVersion = "${apiVersion}"
 }
-generatedClientJar.dependsOn 'openApiGenerate'
+
 
 publish.dependsOn 'generatedClientJar'
 publishMavenPublicationToNexusRepository.dependsOn 'generatedClientJar'
@@ -115,6 +123,13 @@ dependencies {
 
 	implementation "org.mapstruct:mapstruct:${mapStructVersion}"
 	annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.3.0'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.38'
+
+	implementation 'jakarta.validation:jakarta.validation-api:3.1.1'
+
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'

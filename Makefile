@@ -16,7 +16,7 @@ DOCKER_COMPOSE = docker-compose
 device-service-infra-up:
 	@echo "Moving to infrastructure directory..."
 	cd $(INFRA_DIR) && \
-	copy .env.example .env && \
+	cp .env.example .env && \
 	echo "Open .env in editor and change passwords/logins if needed" && \
 	$(DOCKER_COMPOSE) up keycloak nexus nexus-change-password postgres postgres2 postgres-replica postgres2-replica prometheus grafana -d
 	@echo "Infrastructure is starting..."

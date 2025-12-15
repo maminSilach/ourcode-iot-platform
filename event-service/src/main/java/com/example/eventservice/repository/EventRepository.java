@@ -22,6 +22,10 @@ public class EventRepository {
 
     private final CassandraTemplate cassandraTemplate;
 
+    public Event save(Event event) {
+        return cassandraTemplate.insert(event);
+    }
+
     public Optional<Event> loadEvent(String eventId, String deviceId) {
         var query = Query.query(
                 Criteria.where("device_id").is(deviceId),

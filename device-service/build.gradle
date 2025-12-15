@@ -34,9 +34,9 @@ publishing {
 		maven {
 			name = 'nexus'
 			url = "${nexusRepository}"
+			allowInsecureProtocol = true
 
 			credentials {
-				allowInsecureProtocol = true
 				username = "${nexusUsername}"
 				password = "${nexusPassword}"
 			}
@@ -48,6 +48,10 @@ publishing {
 			artifact("build/libs/device-service-api-" + "${apiVersion}" + ".jar") {
 				extension 'jar'
 			}
+
+			groupId = 'com.example'
+			artifactId = 'device-service-api'
+			version = "${apiVersion}"
 		}
 	}
 }
@@ -72,6 +76,8 @@ dependencies {
 	implementation "io.micrometer:micrometer-core"
 
 	runtimeOnly 'org.postgresql:postgresql'
+
+	implementation "org.flywaydb:flyway-core:${flywayVersion}"
 
 	// Sharding Sphere
 	implementation "org.apache.shardingsphere:shardingsphere-jdbc:${apacheShardingSphereVersion}"
@@ -109,6 +115,8 @@ openApiGenerate {
 					 useFeignClients: "true",
 					 interfaceOnly  : "true",
 					 useJakartaEe   : "true",
+					 returnResponseEntity: "false",
+					 useResponseEntity: "false",
 					 useTags: "true"]
 }
 
@@ -135,12 +143,16 @@ tasks.register('annotateFeignClients') {
 	}
 }
 
-compileJava.dependsOn 'annotateFeignClients'
-compileJava.dependsOn 'openApiGenerate'
+tasks.register('compileGeneratedJava', JavaCompile) {
+	dependsOn 'annotateFeignClients'
+	source = layout.buildDirectory.dir("generated/src/main/java").get().asFileTree
+	destinationDirectory = layout.buildDirectory.dir("classes/generated/main").get().asFile
+	classpath = sourceSets.main.compileClasspath
+}
 
 tasks.register('generatedClientJar', Jar) {
-	from sourceSets.main.output
-	include 'com/example/deviceservice/**'
+	dependsOn 'compileGeneratedJava'
+	from layout.buildDirectory.dir("classes/generated/main")
 	archiveBaseName = 'device-service-api'
 	archiveVersion = "${apiVersion}"
 }

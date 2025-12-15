@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: api-orchestrator
+
+  security:
+    oauth2:
+      resourceserver:
+        client:
+          client-id: orchestrator
+        jwt:
+          issuer-uri: http://localhost:8080/realms/out-platform
+
+security:
+  oauth2:
+    client:
+      registration:
+        keycloak:
+          provider: keycloak
+          client-id: "device-client"
+          client-secret: "EExb34BXy7xXRqTRN4wzPECl7D1Nbpe6"
+      provider:
+        keycloak:
+          token-uri: http://localhost:8080/realms/out-platform/protocol/openid-connect/token
+
+server:
+  port: 8070
+
+event:
+  service:
+    base-uri: localhost:8090
+
+device:
+  service:
+    base-uri: localhost:8090
+
+command:
+  service:
+    host: "localhost"
+    port: 52281
+    max-retry: 3
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 60
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+        minimumNumberOfCalls: 5
+  retry:
+    configs:
+      default:
+        maxAttempts: 5
+        waitDuration: 1000ms
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+          - feign.RetryableException
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

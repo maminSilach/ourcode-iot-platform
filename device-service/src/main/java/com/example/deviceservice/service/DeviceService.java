@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,14 @@ public class DeviceService {
         log.info("Start getting device by deviceId = {}", deviceId);
         Device device = loadDeviceById(deviceId);
         return deviceMapper.toDeviceResponse(device);
+    }
+
+    public List<DeviceResponse> getDevices() {
+        log.info("Start getting devices");
+        return deviceRepository.findAll()
+                .stream()
+                .map(deviceMapper::toDeviceResponse)
+                .toList();
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)

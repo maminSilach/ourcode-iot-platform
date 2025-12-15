@@ -1,5 +1,6 @@
 package com.example.eventservice.entity;
 
+import com.example.eventservice.enums.EventStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
@@ -26,4 +27,6 @@ public class Event {
 
     @Column("payload")
     private String payload;
+
+//    private EventStatus status;
 }
