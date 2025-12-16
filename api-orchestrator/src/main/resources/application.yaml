@@ -1,6 +1,8 @@
 spring:
   application:
     name: api-orchestrator
+  config:
+    import: .properties
 
   security:
     oauth2:

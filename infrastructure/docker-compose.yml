@@ -303,6 +303,8 @@ services:
       interval: 30s
       timeout: 5s
       retries: 10
+    networks:
+      - ourcode-iot-platform
 
   postgres-exporter:
     image: prometheuscommunity/postgres-exporter
@@ -365,6 +367,45 @@ services:
     volumes:
       - ./data/nexus-data:/nexus-data
       - ./nexus:/scripts:ro
+
+  device-service:
+    build:
+      context: ../device-service
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      postgres2:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    environment:
+      - SERVER_PORT=8090
+      - SHARD0_MASTER=postgres:5432/postgres
+      - SHARD0_REPLICA=postgres-replica:5432/postgres
+      - SHARD1_MASTER=postgres2:5432/postgres
+      - SHARD1_REPLICA=postgres2-replica:5432/postgres
+      - KEYCLOAK_URL=http://keycloak:8080
+    networks:
+      - ourcode-iot-platform
+
+  event-service:
+    build:
+      context: ../event-service
+      dockerfile: Dockerfile
+    environment:
+      - SERVER_PORT=9080
+      - CASSANDRA_CONTACT_POINTS=cassandra
+      - CASSANDRA_PORT=9042
+    networks:
+      - ourcode-iot-platform
+    ports:
+      - "9080:8080"
+    depends_on:
+      cassandra:
+        condition: service_healthy
 
 networks:
   ourcode-iot-platform:

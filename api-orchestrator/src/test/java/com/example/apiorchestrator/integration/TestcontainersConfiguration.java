@@ -9,10 +9,6 @@ import org.testcontainers.utility.DockerImageName;
 
 public abstract class TestcontainersConfiguration {
 
-    protected static final String KEYCLOAK_USER = "test";
-    protected static final String KEYCLOAK_PASSWORD = "test";
-    protected static final String KEYCLOAK_CLIENT_ID = "orchestrator-client";
-
     public static KeycloakContainer KEYCLOAK = new KeycloakContainer()
             .withRealmImportFile("realm-out-platform.json");
 

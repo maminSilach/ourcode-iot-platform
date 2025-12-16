@@ -21,7 +21,7 @@ public final class JwtUtils {
         throw new UnsupportedOperationException();
     }
 
-    public static String getBearerAuthorizationHeader(String url, String client, String user, String password) throws URISyntaxException {
+    public static String getBearerAuthorizationHeader(String url) throws URISyntaxException {
         RestTemplate restTemplate = new RestTemplate();
 
         URI authorizationURI = new URIBuilder(url).build();
@@ -31,10 +31,6 @@ public final class JwtUtils {
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.put("grant_type", singletonList("client_credentials"));
-//        formData.put("client_id", singletonList(client));
-//        formData.put("username", singletonList(user));
-//        formData.put("password", singletonList(password));
-
         formData.put("client_id", singletonList("device-client"));
         formData.put("client_secret", singletonList("EExb34BXy7xXRqTRN4wzPECl7D1Nbpe6"));
 

@@ -30,7 +30,7 @@ public class DeviceIT extends ApiOrchestratorApplicationTests {
     @BeforeAll
     public static void beforeAll() throws URISyntaxException {
         bearerAuthorizationHeader = JwtUtils.getBearerAuthorizationHeader(
-                getAuthOpenIdConnectTokenUrl(), KEYCLOAK_CLIENT_ID, KEYCLOAK_USER, KEYCLOAK_PASSWORD
+                getAuthOpenIdConnectTokenUrl()
         );
     }
 

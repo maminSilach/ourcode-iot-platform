@@ -110,10 +110,6 @@ paths:
   /api/v1/devices/{deviceId}/version:
     post:
       summary: Обновить версию устройства (сага с компенсацией)
-      description: >
-        Шаг A: зафиксировать targetVersion в device-service (status=UPDATING).
-        Шаг B: отправить команду обновления в router-manager.
-        При сбое шага B — выполняется компенсация: rollback в device-service.
       security: [{ bearerAuth: [] }]
       parameters:
         - in: path
@@ -142,10 +138,8 @@ paths:
                   prevVersion:   { type: string }
                   targetVersion: { type: string }
                   commandId:     { type: string }
-        '409':
-          description: Конфликт версий/статуса в device-service (optimistic lock)
         '502':
-          description: Сбой router-manager, выполнена компенсация
+          description: Сбой, выполнена компенсация
           content:
             application/json:
               schema:
@@ -153,7 +147,7 @@ paths:
                 properties:
                   error:        { type: string,  example: "ROUTER_MANAGER_FAILED" }
                   compensated:  { type: boolean, example: true }
-                  details:      { type: string }
+                  errorResponse:      { type: object } # ErrorResponse
 components:
   securitySchemes:
     bearerAuth:
@@ -161,6 +155,13 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    ErrorResponse:
+      type: object
+      description: Описание ошибки
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer, format: int64 }
     Event:
       type: object
       properties:

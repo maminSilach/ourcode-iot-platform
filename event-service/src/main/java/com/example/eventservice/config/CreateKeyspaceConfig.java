@@ -21,6 +21,9 @@ public class CreateKeyspaceConfig extends AbstractCassandraConfiguration {
     @Value("${spring.cassandra.model-path}")
     private String entityModelPath;
 
+    @Value("${spring.cassandra.contact-points}")
+    private String contactPoint;
+
     @Override
     protected String getKeyspaceName() {
         return keySpaceName;
@@ -44,5 +47,10 @@ public class CreateKeyspaceConfig extends AbstractCassandraConfiguration {
     @Override
     public SchemaAction getSchemaAction() {
         return SchemaAction.CREATE_IF_NOT_EXISTS;
+    }
+
+    @Override
+    public String getContactPoints() {
+        return contactPoint;
     }
 }
