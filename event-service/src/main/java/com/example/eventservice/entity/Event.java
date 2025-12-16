@@ -28,5 +28,6 @@ public class Event {
     @Column("payload")
     private String payload;
 
-//    private EventStatus status;
+    @Column("status")
+    private EventStatus status;
 }

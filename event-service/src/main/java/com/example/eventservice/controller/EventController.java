@@ -2,16 +2,13 @@ package com.example.eventservice.controller;
 
 import com.example.eventservice.dto.request.EventFilter;
 import com.example.eventservice.dto.request.EventParameter;
+import com.example.eventservice.dto.request.EventRequest;
 import com.example.eventservice.dto.response.EventResponse;
 import com.example.eventservice.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +38,17 @@ public class EventController {
         var eventResponse = eventService.getEvent(eventId, deviceId);
 
         return ResponseEntity.ok(eventResponse);
+    }
+
+    @PostMapping("/devices/version")
+    public ResponseEntity<EventResponse> createEvent(@RequestBody EventRequest eventRequest) {
+        var eventResponse = eventService.createEvent(eventRequest);
+        return ResponseEntity.ok(eventResponse);
+    }
+
+    @PostMapping("/{event_id}/devices/{device_id}/rollback")
+    public ResponseEntity<Void> rollbackDevicesVersion(@PathVariable("event_id") String eventId, @PathVariable("device_id") String deviceId) {
+        eventService.rollbackEventVersion(eventId, deviceId);
+        return ResponseEntity.ok().build();
     }
 }

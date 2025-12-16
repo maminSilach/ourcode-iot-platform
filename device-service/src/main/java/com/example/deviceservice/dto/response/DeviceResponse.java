@@ -4,5 +4,8 @@ public record DeviceResponse(
         String id,
         String deviceType,
         Long createdAt,
-        String meta
+        String meta,
+        String idempotenceKey,
+        String oldTargetVersion,
+        String newTargetVersion
 ) {}

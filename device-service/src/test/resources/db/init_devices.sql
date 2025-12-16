@@ -3,5 +3,7 @@ CREATE TABLE IF NOT EXISTS devices
     device_id   TEXT PRIMARY KEY,
     device_type TEXT   NOT NULL,
     created_at  BIGINT NOT NULL,
-    meta        TEXT
+    meta        TEXT,
+    target_version TEXT,
+    idempotence_key TEXT
 );

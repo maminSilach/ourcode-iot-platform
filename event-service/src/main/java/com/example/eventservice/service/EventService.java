@@ -1,7 +1,9 @@
 package com.example.eventservice.service;
 
 import com.example.eventservice.dto.request.EventParameter;
+import com.example.eventservice.dto.request.EventRequest;
 import com.example.eventservice.dto.response.EventResponse;
+import com.example.eventservice.enums.EventStatus;
 import com.example.eventservice.exception.NotFoundException;
 import com.example.eventservice.mapper.EventMapper;
 import com.example.eventservice.repository.EventRepository;
@@ -25,6 +27,17 @@ public class EventService {
         var eventSlice = eventRepository.loadEventsByFilters(parameter);
 
         return mapPage(eventSlice, eventMapper::toEventResponse);
+    }
+
+    public EventResponse createEvent(EventRequest eventRequest) {
+        var event = eventMapper.toEvent(eventRequest);
+        var savedEvent = eventRepository.save(event);
+
+        return eventMapper.toEventResponse(savedEvent);
+    }
+
+    public void rollbackEventVersion(String eventId, String deviceId) {
+      eventRepository.updateEventStatusById(eventId, deviceId, EventStatus.FAIL);
     }
 
     public EventResponse getEvent(String eventId, String deviceId) {

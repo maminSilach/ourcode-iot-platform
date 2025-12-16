@@ -1,8 +1,8 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.5.8'
-	id 'io.spring.dependency-management' version '1.1.7'
-	id 'com.google.protobuf' version '0.9.4'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+	id 'com.google.protobuf' version "${protobufPluginVersion}"
 }
 
 group = 'com.example'
@@ -19,12 +19,12 @@ repositories {
 	mavenCentral()
 
 	maven {
-		url = uri("http://localhost:8081/repository/maven-releases/")
+		url = "${nexusRepository}"
 		allowInsecureProtocol = true
 
 		credentials {
-			username = "admin"
-			password = "admin"
+			username = "${nexusUsername}"
+			password = "${nexusPassword}"
 		}
 	}
 }
@@ -41,23 +41,21 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-	// https://mvnrepository.com/artifact/com.netflix.feign/feign-jackson
-	implementation 'com.netflix.feign:feign-jackson:8.18.0'
+	implementation "com.netflix.feign:feign-jackson:${feignJacksonVersion}"
 
 	// GRPC
-	implementation "io.grpc:grpc-netty-shaded:1.41.0"
-	implementation "io.grpc:grpc-protobuf:1.41.0"
-	implementation "io.grpc:grpc-stub:1.41.0"
-	compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
-	implementation "com.google.protobuf:protobuf-java-util:3.19.4"
+	implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+	implementation "io.grpc:grpc-stub:${grpcVersion}"
+	compileOnly "org.apache.tomcat:annotations-api:${annotationApiTomcatVersion}"
+	implementation "com.google.protobuf:protobuf-java-util:${protobufUtilsVersion}"
 
 	implementation "org.springframework.boot:spring-boot-starter-aop"
 	implementation "io.github.resilience4j:resilience4j-spring-boot3"
 	implementation "io.github.resilience4j:resilience4j-reactor"
 
-	implementation 'com.example:event-service-api:3.0.0'
-	implementation 'com.example:device-service-api:2.0.0'
-	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client
+	implementation "com.example:event-service-api:${eventApiVersion}"
+	implementation "com.example:device-service-api:${deviceApiVersion}"
 	implementation 'org.springframework.security:spring-security-oauth2-client'
 
 	compileOnly 'org.projectlombok:lombok'
@@ -69,6 +67,9 @@ dependencies {
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation "org.mock-server:mockserver-client-java:${mockserverClientJava}"
+	testImplementation "com.github.dasniko:testcontainers-keycloak:${testcontainersKeycloak}"
+	testImplementation 'org.testcontainers:mockserver'
 }
 
 dependencyManagement {
@@ -79,12 +80,12 @@ dependencyManagement {
 
 protobuf {
 	protoc {
-		artifact = "com.google.protobuf:protoc:3.21.6"
+		artifact = "com.google.protobuf:protoc:${protobufVersion}"
 	}
 
 	plugins {
 		grpc {
-			artifact = "io.grpc:protoc-gen-grpc-java:1.53.0"
+			artifact = "io.grpc:protoc-gen-grpc-java:${genGrpcVersion}"
 		}
 	}
 

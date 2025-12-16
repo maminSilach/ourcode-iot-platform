@@ -2,6 +2,7 @@ package com.example.apiorchestrator.adapter.out;
 
 import com.example.apiorchestrator.domain.port.out.DeviceClient;
 import com.example.deviceservice.api.DeviceApi;
+import com.example.deviceservice.model.DeviceRequest;
 import com.example.deviceservice.model.DeviceResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -31,5 +32,12 @@ public class DeviceFeignClient implements DeviceClient {
     @CircuitBreaker(name = "default")
     public List<DeviceResponse> getDevices() {
         return deviceApi.getDevices();
+    }
+
+    @Override
+    @Retry(name = "default")
+    @CircuitBreaker(name = "default")
+    public DeviceResponse updateDevice(String id, DeviceRequest deviceRequest) {
+        return deviceApi.updateDevice(id, deviceRequest);
     }
 }

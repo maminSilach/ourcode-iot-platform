@@ -29,4 +29,10 @@ public class Device {
 
     @Column(name = "meta")
     private String meta;
+
+    @Column(name = "target_version")
+    private String targetVersion;
+
+    @Column(name = "idempotence_key")
+    private String idempotenceKey;
 }

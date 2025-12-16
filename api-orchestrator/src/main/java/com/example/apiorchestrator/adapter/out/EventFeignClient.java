@@ -3,6 +3,7 @@ package com.example.apiorchestrator.adapter.out;
 import com.example.apiorchestrator.domain.dto.request.filter.EventParameter;
 import com.example.apiorchestrator.domain.port.out.EventClient;
 import com.example.eventservice.api.EventApi;
+import com.example.eventservice.model.ApiV1EventsDevicesVersionPostRequest;
 import com.example.eventservice.model.Event;
 import com.example.eventservice.model.PageResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -37,5 +38,17 @@ public class EventFeignClient implements EventClient {
                 eventParameter.page(),
                 eventParameter.pageSize()
         );
+    }
+
+    @Override
+    @Retry(name = "default")
+    @CircuitBreaker(name = "default")
+    public Event createEvent(ApiV1EventsDevicesVersionPostRequest request) {
+        return eventApi.apiV1EventsDevicesVersionPost(request);
+    }
+
+    @Override
+    public void rollbackSagaVersion(String eventId, String deviceId) {
+        eventApi.apiV1EventsEventIdDevicesDeviceIdRollbackPost(eventId, deviceId);
     }
 }

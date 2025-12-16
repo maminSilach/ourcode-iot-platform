@@ -68,6 +68,51 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           description: Событие не найдено
+  /api/v1/events/devices/version:
+    post:
+      summary: Создать событие обновление версии Device
+      tags:
+        - Event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [targetVersion]
+              properties:
+                targetVersion:   { type: string, example: "2.3.5" }
+                deviceId:   { type: string, example: "f4f6b4a2-..." }
+                idempotencyKey:  { type: string, example: "f4f6b4a2-..." }
+                status:  { type: string, example: "UPDATING" }
+      responses:
+        '200':
+          description: Найденное событие
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Событие не найдено
+  /api/v1/events/{event_id}/devices/{device_id}/rollback:
+    post:
+      summary: Отменить событие обновление версии
+      tags:
+        - Event
+      parameters:
+        - in: path
+          name: event_id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: device_id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Произошла успешная отмена
+        '404':
+          description: Событие не найдено
 components:
   schemas:
     Event:

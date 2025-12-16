@@ -3,6 +3,7 @@ package com.example.apiorchestrator.domain.service;
 import com.example.apiorchestrator.domain.dto.request.filter.EventParameter;
 import com.example.apiorchestrator.domain.port.in.EventUseCase;
 import com.example.apiorchestrator.domain.port.out.EventClient;
+import com.example.eventservice.model.ApiV1EventsDevicesVersionPostRequest;
 import com.example.eventservice.model.Event;
 import com.example.eventservice.model.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,15 @@ public class EventService implements EventUseCase {
         return Mono.fromCallable(
                 () -> eventClient.getEvents(eventParameter)
         ).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Event createEvent(ApiV1EventsDevicesVersionPostRequest request) {
+        return eventClient.createEvent(request);
+    }
+
+    @Override
+    public void rollbackSagaVersion(String eventId, String deviceId) {
+        eventClient.rollbackSagaVersion(eventId, deviceId);
     }
 }

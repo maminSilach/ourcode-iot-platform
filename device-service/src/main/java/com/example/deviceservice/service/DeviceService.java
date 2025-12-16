@@ -36,13 +36,14 @@ public class DeviceService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public DeviceResponse updateDevice(DeviceRequest deviceRequest, String id) {
         Device deviceToUpdate = loadDeviceById(id);
+        String oldTargetVersion = deviceToUpdate.getTargetVersion();
         log.info("Start updating device with deviceId = {}", id);
 
         Device updatedDeviceToSave = deviceMapper.updateDevice(deviceToUpdate, deviceRequest);
         Device savedDevice = deviceRepository.save(updatedDeviceToSave);
         log.debug("Device updated with body = {}", savedDevice);
 
-        return deviceMapper.toDeviceResponse(savedDevice);
+        return deviceMapper.toDeviceResponse(savedDevice, oldTargetVersion);
     }
 
     public DeviceResponse getDeviceById(String deviceId) {

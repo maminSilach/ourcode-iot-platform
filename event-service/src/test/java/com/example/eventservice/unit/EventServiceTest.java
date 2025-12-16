@@ -40,7 +40,7 @@ class EventServiceTest {
     void getEventsByFilters_shouldReturnPageOfEventResponses() {
         var eventFilter = new EventFilter(100L, 2000L, "SomeType");
         var eventParameter = new EventParameter(eventFilter, "device123", 0, 100);
-        var event = new Event("device123", "event123", 10000L, "CL", "some-payload");
+        var event = new Event("device123", "event123", 10000L, "CL", "some-payload", null);
 
         when(eventRepository.loadEventsByFilters(eventParameter)).thenReturn(new SliceImpl<>(List.of(event)));
 

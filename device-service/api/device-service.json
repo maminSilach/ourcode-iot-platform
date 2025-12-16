@@ -259,6 +259,14 @@
           "meta": {
             "type": "string",
             "description": "Метаданные устройства в формате JSON"
+          },
+          "idempotenceKey": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "targetVersion": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
           }
         }
       },
@@ -279,6 +287,18 @@
             "description": "Время создания в миллисекундах с эпохи Unix"
           },
           "meta": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "idempotenceKey": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "oldTargetVersion": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "newTargetVersion": {
             "type": "string",
             "description": "Метаданные устройства в формате JSON"
           }

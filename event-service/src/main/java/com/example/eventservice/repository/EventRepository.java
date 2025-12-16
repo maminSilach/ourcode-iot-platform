@@ -3,11 +3,13 @@ package com.example.eventservice.repository;
 import com.example.eventservice.dto.request.EventFilter;
 import com.example.eventservice.dto.request.EventParameter;
 import com.example.eventservice.entity.Event;
+import com.example.eventservice.enums.EventStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.cassandra.core.CassandraTemplate;
 import org.springframework.data.cassandra.core.query.Criteria;
 import org.springframework.data.cassandra.core.query.CriteriaDefinition;
 import org.springframework.data.cassandra.core.query.Query;
+import org.springframework.data.cassandra.core.query.Update;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
@@ -24,6 +26,15 @@ public class EventRepository {
 
     public Event save(Event event) {
         return cassandraTemplate.insert(event);
+    }
+
+    public void updateEventStatusById(String eventId, String deviceId, EventStatus status) {
+        var update = Update.update("status", status);
+        var query = Query
+                .query(Criteria.where("event_id").is(eventId))
+                .and(Criteria.where("device_id").is(deviceId));
+
+        cassandraTemplate.update(query, update, Event.class);
     }
 
     public Optional<Event> loadEvent(String eventId, String deviceId) {

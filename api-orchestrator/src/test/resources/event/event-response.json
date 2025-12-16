@@ -1,0 +1,7 @@
+{
+  "device_id": "be932527-e70a-40cf-82d1-035ef583e895",
+  "event_id": "5bc25367-a787-4f0a-99a9-85df4e60fed6",
+  "timestamp": 1640995200000,
+  "type": "TEMPERATURE_ALERT",
+  "payload": "{\"temperature\": 85.5, \"unit\": \"celsius\", \"threshold\": 80.0}"
+}

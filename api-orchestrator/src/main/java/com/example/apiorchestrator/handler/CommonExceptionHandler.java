@@ -1,6 +1,8 @@
 package com.example.apiorchestrator.handler;
 
 import com.example.apiorchestrator.domain.dto.response.ErrorResponse;
+import com.example.apiorchestrator.domain.dto.response.SagaErrorResponse;
+import com.example.apiorchestrator.exception.SagaException;
 import feign.FeignException;
 import io.grpc.StatusRuntimeException;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,18 @@ public class CommonExceptionHandler extends ResponseEntityExceptionHandler {
 
         return Mono.just(
                 ResponseEntity.status(rootHttpStatus).body(errorResponse)
+        );
+    }
+
+    @ExceptionHandler(SagaException.class)
+    public Mono<ResponseEntity<SagaErrorResponse>> handleSagaException(SagaException ex, ServerWebExchange exchange) {
+        var rootHttpStatus = HttpStatus.BAD_GATEWAY;
+        var errorResponse = logAndinitializeErrorResponse(ex, exchange, rootHttpStatus);
+
+        return Mono.just(
+                ResponseEntity.status(rootHttpStatus).body(
+                        SagaErrorResponse.of(ex.getService(), errorResponse)
+                )
         );
     }
 

@@ -81,7 +81,7 @@ public class DeviceServiceTest {
         ArgumentCaptor<Device> deviceArgumentCaptor = ArgumentCaptor.forClass(Device.class);
 
         when(deviceRepository.save(any(Device.class))).thenAnswer(invocationOnMock -> invocationOnMock.getArgument(0));
-        Device copyDeviceLaptop = new Device(DEVICE_LAPTOP.getId(), DEVICE_LAPTOP.getDeviceType(), DEVICE_LAPTOP.getCreatedAt(), DEVICE_LAPTOP.getMeta());
+        Device copyDeviceLaptop = new Device(DEVICE_LAPTOP.getId(), DEVICE_LAPTOP.getDeviceType(), DEVICE_LAPTOP.getCreatedAt(), DEVICE_LAPTOP.getMeta(), null, null);
         when(deviceRepository.getDeviceById(anyString())).thenAnswer((_) -> Optional.of(copyDeviceLaptop));
 
         DeviceResponse deviceResponse = deviceService.updateDevice(DEVICE_PHONE_REQUEST, LAPTOP_DEVICE_ID);
@@ -89,7 +89,7 @@ public class DeviceServiceTest {
         inOrder.verify(deviceRepository).getDeviceById(anyString());
         inOrder.verify(deviceMapper).updateDevice(any(Device.class), any(DeviceRequest.class));
         inOrder.verify(deviceRepository).save(any(Device.class));
-        inOrder.verify(deviceMapper).toDeviceResponse(any(Device.class));
+        inOrder.verify(deviceMapper).toDeviceResponse(any(Device.class), any());
 
         verify(deviceRepository, times(1)).getDeviceById(anyString());
         verify(deviceRepository).getDeviceById(
