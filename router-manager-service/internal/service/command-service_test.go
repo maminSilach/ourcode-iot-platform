@@ -152,14 +152,27 @@ func TestCommandService_PollCommands_EmptyRouterID(t *testing.T) {
 
 	req := &pb.PollRequest{RouterId: ""}
 
+	expectedCommands := []*pb.Command{
+		{
+			Id:          uuid.New().String(),
+			CommandType: pb.CommandType_REBOOT,
+		},
+		{
+			Id:          uuid.New().String(),
+			CommandType: pb.CommandType_PING,
+		},
+	}
+
+	mockRepo.On("PollCommands", "").Return(expectedCommands, nil)
+
 	// Act
 	response, err := service.PollCommands(req)
 
 	// Assert
-	assert.Error(t, err)
-	assert.Nil(t, response)
-	assert.Equal(t, codes.InvalidArgument, status.Code(err))
-	mockRepo.AssertNotCalled(t, "PollCommands")
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	assert.Equal(t, expectedCommands, response.Commands)
+	mockRepo.AssertCalled(t, "PollCommands", "")
 }
 
 func TestCommandService_PollCommands_RepositoryError(t *testing.T) {

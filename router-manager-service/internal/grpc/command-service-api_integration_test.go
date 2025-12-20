@@ -194,7 +194,7 @@ func (suite *CommandControllerIntegrationTestSuite) TestAck_Success() {
 	_, err = db.ExecContext(suite.ctx, `
 		INSERT INTO commands (id, router_id, command_type, payload, status, sent_at, created_at)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)
-	`, commandID, routerID, "REBOOT", `{"param": "value"}`, "PENDING", time.Now(), time.Now())
+	`, commandID, routerID, "REBOOT", `{"param": "value"}`, "SENT", time.Now(), time.Now())
 	assert.NoError(suite.T(), err)
 
 	req := &pb.AckRequest{
@@ -289,7 +289,7 @@ func (suite *CommandControllerIntegrationTestSuite) TestAck_MultipleCommands() {
 			INSERT INTO commands (id, router_id, command_type, payload, status, sent_at, created_at)
 			VALUES ($1, $2, $3, $4, $5, $6, $7)
 		`, cmdID, routerID, "PING", fmt.Sprintf(`{"seq": %d}`, i),
-			"PENDING", time.Now().Add(time.Duration(i)*time.Minute), time.Now())
+			"SENT", time.Now().Add(time.Duration(i)*time.Minute), time.Now())
 		assert.NoError(suite.T(), err)
 	}
 

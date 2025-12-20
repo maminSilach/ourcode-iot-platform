@@ -40,11 +40,6 @@ func (s *CommandService) CreateCommand(req *pb.CommandRequest, status pb.Status)
 }
 
 func (s *CommandService) PollCommands(req *pb.PollRequest) (*pb.PollResponse, error) {
-	if err := s.validatePollRequest(req); err != nil {
-		log.Printf("Error processing validate request: %v", err)
-		return nil, err
-	}
-
 	commands, err := s.repo.PollCommands(req.GetRouterId())
 
 	if err != nil {
@@ -84,14 +79,6 @@ func (s *CommandService) validateCommandRequest(req *pb.CommandRequest) error {
 		if _, err := uuid.Parse(req.GetRouterId()); err != nil {
 			return status.Errorf(codes.InvalidArgument, "incorrect format router_id: %v", err)
 		}
-	}
-
-	return nil
-}
-
-func (s *CommandService) validatePollRequest(req *pb.PollRequest) error {
-	if req.GetRouterId() == "" {
-		return status.Error(codes.InvalidArgument, "router_id must have a value")
 	}
 
 	return nil

@@ -82,6 +82,11 @@ func (c *CommandModel) GetCreatedAtString() string {
 
 func ToCommandModel(req *pb.CommandRequest, status pb.Status) (*CommandModel, error) {
 	parsedRouterID, err := util.ToUUIDFromStringIfPresent(req.GetRouterId())
+
+	if err != nil {
+		return nil, err
+	}
+
 	payloadAsJSONPGType, err := util.ToJSONPGType(req.GetPayload())
 
 	c := &CommandModel{
