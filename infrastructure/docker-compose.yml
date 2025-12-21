@@ -353,6 +353,8 @@ services:
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8081" ]
       start_period: 60s
+    networks:
+      - ourcode-iot-platform
 
   nexus-change-password:
     image: appropriate/curl

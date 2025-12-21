@@ -70,6 +70,8 @@ dependencies {
 	testImplementation "org.mock-server:mockserver-client-java:${mockserverClientJava}"
 	testImplementation "com.github.dasniko:testcontainers-keycloak:${testcontainersKeycloak}"
 	testImplementation 'org.testcontainers:mockserver'
+	testImplementation "com.tngtech.archunit:archunit-junit5:${archUnitTestVersion}"
+
 }
 
 dependencyManagement {
