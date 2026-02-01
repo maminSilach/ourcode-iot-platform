@@ -3,12 +3,14 @@
 .PHONY: events-collector-infra-up events-collector-infra-check events-collector-app-test events-collector-app-run
 .PHONY: device-service-infra-up device-service-infra-check device-service-app-test device-service-app-run
 .PHONY: failed-event-processor-infra-up failed-event-processor-infra-check failed-event-processor-app-test failed-event-processor-app-run
+.PHONY: router-manager-service-infra-up router-manager-service-infra-check router-manager-service-app-test device-service-app-run
 
 INFRA_DIR = ./infrastructure
 DEVICE_COLLECTOR_APP_DIR = ./device-collector
 EVENTS_COLLECTOR_APP_DIR = ./events-collector-service
 DEVICE_SERVICE_APP_DIR = ./device-service
 FAILED_EVENTS_PROCESSOR_APP_DIR = ./failed-events-processor
+ROUTER_MANAGER_APP_DIR = ./router-manager-service
 DOCKER_COMPOSE = docker-compose
 
 device-service-infra-up:
@@ -170,6 +172,32 @@ failed-event-processor-app-run:
 	@echo "Starting Spring Boot application..."
 	cd $(FAILED_EVENTS_PROCESSOR_APP_DIR) && gradlew bootRun
 
+router-manager-service-infra-up:
+	@echo "Moving to infrastructure directory..."
+	cd $(INFRA_DIR) && \
+	cp .env.example .env && \
+	echo "Open .env in editor and change passwords/logins if needed" && \
+	$(DOCKER_COMPOSE) up postgres -d
+	@echo "Infrastructure is starting..."
+
+router-manager-service-infra-check:
+	@echo "Checking container status..."
+	cd $(INFRA_DIR) && $(DOCKER_COMPOSE) ps
+
+	@echo "Testing Postgres"
+	cd $(INFRA_DIR) && $(DOCKER_COMPOSE) exec postgres psql -U postgres -c "SELECT pg_is_in_recovery();"
+
+	@echo "Back to Service Directory"
+	cd $(./)
+
+router-manager-service-app-test:
+	@echo "Running unit and integration tests..."
+	cd $(ROUTER_MANAGER_APP_DIR) && go test ./... -v
+
+router-manager-service-app-run:
+	@echo "Starting Spring Boot application..."
+	cd $(ROUTER_MANAGER_APP_DIR) && go run ./cmd/router-manager-service
+
 help:
 	@echo "Available commands:"
 	@echo "  make device-collector-infra-up     - Start infrastructure Device Collector"
@@ -191,5 +219,10 @@ help:
 	@echo "  make failed-event-processor-infra-check  - Check infrastructure status of Failed Event Processor"
 	@echo "  make failed-event-processor-app-test    - Run application tests of Failed Event Processor"
 	@echo "  make failed-event-processor-app-run    - Run Spring Boot Failed Event Processor Application"
+
+	@echo "  make router-manager-service-infra-up     - Start infrastructure Router Manager Service"
+	@echo "  make router-manager-service-infra-check  - Check infrastructure status of Router Manager Service"
+	@echo "  make router-manager-service-app-test    - Run application tests of Router Manager Service"
+	@echo "  make router-manager-service-app-run    - Run Spring Boot Router Manager Application"
 
 	@echo "  make help         - Show this help"
