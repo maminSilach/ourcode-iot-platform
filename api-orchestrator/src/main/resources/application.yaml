@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: api-orchestrator
+  config:
+    import: .properties
+
+  security:
+    oauth2:
+      resourceserver:
+        client:
+          client-id: ${KEYCLOAK_CLIENT_ID}
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URL}
+
+security:
+  oauth2:
+    client:
+      registration:
+        keycloak:
+          provider: keycloak
+          client-id: ${KEYCLOAK_DEVICE_CLIENT_ID}
+          client-secret: ${KEYCLOAK_DEVICE_CLIENT_SECRET}
+      provider:
+        keycloak:
+          token-uri: ${KEYCLOAK_DEVICE_TOKEN_URL}
+
+server:
+  port: ${SERVER_PORT}
+
+event:
+  service:
+    base-uri: ${EVENT_SERVICE_URI}
+
+device:
+  service:
+    base-uri: ${DEVICE_SERVICE_URI}
+
+command:
+  service:
+    host: ${COMMAND_SERVICE_HOST}
+    port: ${COMMAND_SERVICE_PORT}
+    max-retry: ${COMMAND_SERVICE_MAX_RETRY}
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: ${SLIDING_WINDOW_SIZE}
+        permittedNumberOfCallsInHalfOpenState: ${NUMBER_CALLS_IN_HALF_OPEN_STATE}
+        failureRateThreshold: ${FAILURE_RATE_THRESHOLD}
+        waitDurationInOpenState: ${WAIT_DURATION_IN_OPEN_STATE}
+        minimumNumberOfCalls: ${MINIMUM_NUMBER_CALLS}
+
+  retry:
+    configs:
+      default:
+        maxAttempts: ${MAX_CLIENT_ATTEMPTS}
+        waitDuration: ${MAX_CLIENT_DURATION}
+        retryExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.util.concurrent.TimeoutException
+          - java.io.IOException
+          - feign.RetryableException
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${MANAGEMENT_INCLUDE}
+  endpoint:
+    health:
+      show-details: ${MANAGEMENT_SHOW_DETAILS}

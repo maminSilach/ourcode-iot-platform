@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/devices")
@@ -41,6 +43,13 @@ public class DeviceController {
     public ResponseEntity<DeviceResponse> getDeviceById(@PathVariable String id) {
         DeviceResponse deviceResponse = deviceService.getDeviceById(id);
         return ResponseEntity.ok(deviceResponse);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAnyAuthority('SCOPE_read')")
+    public ResponseEntity<List<DeviceResponse>> getDevices() {
+        List<DeviceResponse> deviceResponses = deviceService.getDevices();
+        return ResponseEntity.ok(deviceResponses);
     }
 
     @DeleteMapping("/{id}")

@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.proto";
+option optimize_for = SPEED;
+
+enum Status {
+  PENDING = 0;
+  SENT = 1;
+  ACKED = 2;
+  FAILED = 3;
+}
+
+enum CommandType {
+  REBOOT = 0;
+  PING  = 1;
+}
+
+message CommandRequest {
+  string router_id = 1;
+  CommandType command_type = 2;
+  string payload = 3;
+}
+
+message PollRequest {
+  string router_id = 1;
+}
+
+message PollResponse {
+  repeated Command commands = 1;
+}
+
+message Command {
+  string id = 1;
+  string router_id = 2;
+  CommandType command_type = 3;
+  string payload = 4;
+  Status status = 5;
+  string sent_at = 6;
+  string acked_at = 7;
+  string created_at = 8;
+}
+
+message AckRequest {
+  string router_id = 1;
+  string command_id = 2;
+}
+
+service CommandService {
+  rpc sendCommand (CommandRequest) returns (google.protobuf.Empty) {}
+  rpc poll (PollRequest) returns (PollResponse) {}
+  rpc ack (AckRequest) returns (google.protobuf.Empty) {}
+}

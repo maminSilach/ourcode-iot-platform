@@ -16,27 +16,35 @@ public final class DeviceData {
             PHONE_DEVICE_ID,
             "phone-type",
             10000L,
-            "phone-meta"
+            "phone-meta",
+            null,
+            null
     );
 
     public static final Device DEVICE_LAPTOP = new Device(
             LAPTOP_DEVICE_ID,
             "laptop-type",
             10000L,
-            "laptop-meta"
+            "laptop-meta",
+            null,
+            null
     );
 
     public static final DeviceRequest DEVICE_PHONE_REQUEST = new DeviceRequest(
             PHONE_DEVICE_ID,
             "phone-type",
             10000L,
-            "phone-meta"
+            "phone-meta",
+            null,
+            null
     );
 
     public static final DeviceRequest DEVICE_LAPTOP_REQUEST = new DeviceRequest(
             LAPTOP_DEVICE_ID,
             "laptop-type",
             10000L,
-            "laptop-meta"
+            "laptop-meta",
+            null,
+            null
     );
 }

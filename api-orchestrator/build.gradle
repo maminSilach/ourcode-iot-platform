@@ -1,0 +1,108 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+	id 'com.google.protobuf' version "${protobufPluginVersion}"
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'api-orchestrator'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(24)
+	}
+}
+
+repositories {
+	mavenCentral()
+
+	maven {
+		url = "${nexusRepository}"
+		allowInsecureProtocol = true
+
+		credentials {
+			username = "${nexusUsername}"
+			password = "${nexusPassword}"
+		}
+	}
+}
+
+ext {
+	set('springCloudVersion', "2025.0.0")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	implementation "com.netflix.feign:feign-jackson:${feignJacksonVersion}"
+
+	// GRPC
+	implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+	implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+	implementation "io.grpc:grpc-stub:${grpcVersion}"
+	compileOnly "org.apache.tomcat:annotations-api:${annotationApiTomcatVersion}"
+	implementation "com.google.protobuf:protobuf-java-util:${protobufUtilsVersion}"
+
+	implementation "org.springframework.boot:spring-boot-starter-aop"
+	implementation "io.github.resilience4j:resilience4j-spring-boot3"
+	implementation "io.github.resilience4j:resilience4j-reactor"
+
+	implementation "com.example:event-service-api:${eventApiVersion}"
+	implementation "com.example:device-service-api:${deviceApiVersion}"
+	implementation 'org.springframework.security:spring-security-oauth2-client'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation "org.mock-server:mockserver-client-java:${mockserverClientJava}"
+	testImplementation "com.github.dasniko:testcontainers-keycloak:${testcontainersKeycloak}"
+	testImplementation 'org.testcontainers:mockserver'
+	testImplementation "com.tngtech.archunit:archunit-junit5:${archUnitTestVersion}"
+
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:${protobufVersion}"
+	}
+
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:${genGrpcVersion}"
+		}
+	}
+
+	generateProtoTasks {
+		all().each { task ->
+			task.builtins {
+				java {}
+			}
+			task.plugins {
+				grpc {}
+			}
+		}
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

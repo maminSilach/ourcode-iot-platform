@@ -4,5 +4,7 @@ public record DeviceRequest(
         String id,
         String deviceType,
         Long createdAt,
-        String meta
+        String meta,
+        String idempotenceKey,
+        String targetVersion
 ) {}

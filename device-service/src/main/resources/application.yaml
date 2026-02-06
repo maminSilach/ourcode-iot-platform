@@ -48,6 +48,9 @@ spring:
       algorithm: ${SHARD_ALGORITHM}
       type: ${SHARD_TYPE}
 
+  flyway:
+    enabled: false
+
 management:
   health:
     readinessstate:
@@ -61,3 +64,20 @@ management:
   endpoint:
     health:
       show-details: ${MANAGEMENT_SHOW_DETAILS}
+
+
+flyway:
+  location: ${FLYWAY_LOCATION}
+  dataSources:
+    - url: jdbc:postgresql://${SHARD0_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD0_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_MASTER}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+    - url: jdbc:postgresql://${SHARD1_REPLICA}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}

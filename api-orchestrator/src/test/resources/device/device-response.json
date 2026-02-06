@@ -1,0 +1,9 @@
+{
+  "id": "be932527-e70a-40cf-82d1-035ef583e895",
+  "deviceType": "THERMOSTAT",
+  "createdAt": 1702609200000,
+  "meta": null,
+  "idempotenceKey": "idemp-12345",
+  "oldTargetVersion": "1.0.0",
+  "newTargetVersion": "1.1.0"
+}

@@ -1,8 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "OpenAPI definition",
-    "version": "v0"
+    "title": "Device Management API",
+    "version": "v0",
+    "description": "API for managing devices. Все endpoints требуют JWT токена авторизации из Keycloak."
   },
   "servers": [
     {
@@ -17,6 +18,13 @@
           "device"
         ],
         "operationId": "getDeviceById",
+        "summary": "Получить устройство по ID",
+        "description": "Получение информации об устройстве по его идентификатору. Требуется JWT токен авторизации из Keycloak.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -24,19 +32,29 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID устройства"
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceResponse"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - JWT токен отсутствует или невалиден"
+          },
+          "403": {
+            "description": "Forbidden - недостаточно прав"
+          },
+          "404": {
+            "description": "Device not found"
           }
         }
       },
@@ -45,6 +63,13 @@
           "device"
         ],
         "operationId": "updateDevice",
+        "summary": "Обновить устройство",
+        "description": "Обновление информации об устройстве. Требуется JWT токен авторизации из Keycloak.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -52,7 +77,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID устройства"
           }
         ],
         "requestBody": {
@@ -63,18 +89,31 @@
               }
             }
           },
-          "required": true
+          "required": true,
+          "description": "Данные устройства для обновления"
         },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request - невалидные данные"
+          },
+          "401": {
+            "description": "Unauthorized - JWT токен отсутствует или невалиден"
+          },
+          "403": {
+            "description": "Forbidden - недостаточно прав"
+          },
+          "404": {
+            "description": "Device not found"
           }
         }
       },
@@ -83,6 +122,13 @@
           "device"
         ],
         "operationId": "deleteDeviceById",
+        "summary": "Удалить устройство",
+        "description": "Удаление устройства по ID. Требуется JWT токен авторизации из Keycloak.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -90,22 +136,73 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "ID устройства"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK - устройство успешно удалено"
+          },
+          "401": {
+            "description": "Unauthorized - JWT токен отсутствует или невалиден"
+          },
+          "403": {
+            "description": "Forbidden - недостаточно прав"
+          },
+          "404": {
+            "description": "Device not found"
           }
         }
       }
     },
     "/v1/devices": {
+      "get": {
+        "tags": [
+          "device"
+        ],
+        "operationId": "getDevices",
+        "summary": "Получить список всех устройств",
+        "description": "Получение списка всех устройств. Требуется JWT токен авторизации из Keycloak с scope 'read'.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeviceResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - JWT токен отсутствует или невалиден"
+          },
+          "403": {
+            "description": "Forbidden - недостаточно прав (требуется scope 'read')"
+          }
+        }
+      },
       "post": {
         "tags": [
           "device"
         ],
         "operationId": "createDevice",
+        "summary": "Создать новое устройство",
+        "description": "Создание нового устройства. Требуется JWT токен авторизации из Keycloak.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -114,18 +211,28 @@
               }
             }
           },
-          "required": true
+          "required": true,
+          "description": "Данные нового устройства"
         },
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeviceResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request - невалидные данные"
+          },
+          "401": {
+            "description": "Unauthorized - JWT токен отсутствует или невалиден"
+          },
+          "403": {
+            "description": "Forbidden - недостаточно прав"
           }
         }
       }
@@ -137,17 +244,29 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Идентификатор устройства"
           },
           "deviceType": {
-            "type": "string"
+            "type": "string",
+            "description": "Тип устройства"
           },
           "createdAt": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Время создания в миллисекундах с эпохи Unix"
           },
           "meta": {
-            "type": "string"
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "idempotenceKey": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "targetVersion": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
           }
         }
       },
@@ -155,20 +274,49 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Идентификатор устройства"
           },
           "deviceType": {
-            "type": "string"
+            "type": "string",
+            "description": "Тип устройства"
           },
           "createdAt": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Время создания в миллисекундах с эпохи Unix"
           },
           "meta": {
-            "type": "string"
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "idempotenceKey": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "oldTargetVersion": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
+          },
+          "newTargetVersion": {
+            "type": "string",
+            "description": "Метаданные устройства в формате JSON"
           }
         }
       }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT токен авторизации из Keycloak. Получите токен через Keycloak OAuth2 flow и передавайте в заголовке: Authorization: Bearer {token}"
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }
