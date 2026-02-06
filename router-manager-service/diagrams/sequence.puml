@@ -1,0 +1,17 @@
+@startuml
+actor Admin
+actor Router
+participant "Command Service (Go)" as CS
+database "PostgreSQL" as PG
+
+Admin -> CS : POST /api/v1/send-command
+CS -> PG : Сохранить команду (PENDING)
+
+Router -> CS : POST /api/v1/commands/poll
+CS -> PG : Получить команды для router_id
+CS -> Router : Отдать команды
+CS -> PG : Обновить статус команд (SENT, sent_at)
+
+Router -> CS : POST /api/v1/commands/ack
+CS -> PG : Обновить команду (ACKED, acked_at)
+@enduml

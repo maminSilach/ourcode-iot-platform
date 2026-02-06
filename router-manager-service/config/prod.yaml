@@ -1,0 +1,14 @@
+database:
+  host: ${DATABASE_HOST}
+  port: ${DATABASE_PORT}
+  user: ${DATABASE_USER}
+  password: ${DATABASE_PASSWORD}
+  name: ${DATABASE_NAME}
+  sslmode: ${DATABASE_SSLMODE}
+
+migrations:
+  path: "database/migrations"
+
+server:
+  port: ${SERVER_PORT}
+  timeout: ${SERVER_TIMEOUT}
